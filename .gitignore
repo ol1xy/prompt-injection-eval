@@ -1,0 +1,55 @@
+# Python virtualenv & bytecode
+.venv/
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Packaging & caches
+.cache/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Testing & linters
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Local model weights / HuggingFace caches
+*.bin
+*.safetensors
+*.pt
+*.onnx
+
+# Ignore course presentations, proposals, and documents (code repo only)
+*.docx
+*.pptx
+*.pdf
+*.png
+*.jpg
+*.jpeg
+*.m4a
+*.mp3
+*.mp4
+team_message_and_spec.txt
+
+# OS metadata
+.DS_Store
+Thumbs.db
+
+model.py
+
