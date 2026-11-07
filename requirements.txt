@@ -1,0 +1,10 @@
+# Requirements for Prompt-Injection Attack & Defense Evaluation Platform
+# Tested on Python 3.12 (Windows / Linux / macOS)
+
+torch>=2.4.0
+transformers>=4.46.0
+tokenizers>=0.20.0
+huggingface-hub>=0.23.0
+safetensors>=0.4.0
+requests>=2.31.0
+rich>=13.8.0
