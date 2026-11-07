@@ -4,6 +4,7 @@
 
 Inspects user input and external text channels separately using Prompt-Guard-86M.
 Flags requests where injection or jailbreak probability exceeds the threshold.
+Supports --mock mode for offline testing and rapid pipeline validation.
 """
 from __future__ import annotations
 
@@ -40,7 +41,6 @@ def _load_pipeline(model_id: str = DEFAULT_MODEL_ID, token: str | None = None) -
         _ACTIVE_BACKEND = "heuristic_fallback (transformers not installed)"
         return None
 
-    # Try preferred model ID first
     candidates = [model_id]
     if model_id != DEFAULT_MODEL_ID:
         candidates.append(DEFAULT_MODEL_ID)
@@ -98,9 +98,14 @@ def _heuristic_check(text: str) -> dict[str, float]:
     }
 
 
-def _classify_text(text: str, model_id: str = DEFAULT_MODEL_ID) -> dict[str, float]:
+def _classify_text(text: str, model_id: str = DEFAULT_MODEL_ID, mock: bool = False) -> dict[str, float]:
+    global _ACTIVE_BACKEND
     if not text or not text.strip():
         return {"INJECTION": 0.0, "JAILBREAK": 0.0, "BENIGN": 1.0}
+
+    if mock or os.environ.get("DEFENSE_MOCK", "0") in {"1", "true", "yes"}:
+        _ACTIVE_BACKEND = "mock_heuristic"
+        return _heuristic_check(text)
 
     pipe = _load_pipeline(model_id)
     if pipe is None:
@@ -129,12 +134,13 @@ def check_input_safety(
     external_text: str = "",
     threshold: float = DEFAULT_THRESHOLD,
     model_id: str = DEFAULT_MODEL_ID,
+    mock: bool = False,
 ) -> dict[str, Any]:
     """Inspects user input and external text channels separately.
     Returns ALLOW if all risk scores < threshold, else BLOCK.
     """
-    user_scores = _classify_text(user_input, model_id)
-    ext_scores = _classify_text(external_text, model_id) if external_text.strip() else {
+    user_scores = _classify_text(user_input, model_id, mock=mock)
+    ext_scores = _classify_text(external_text, model_id, mock=mock) if external_text.strip() else {
         "INJECTION": 0.0, "JAILBREAK": 0.0, "BENIGN": 1.0
     }
 
@@ -191,10 +197,11 @@ if __name__ == "__main__":
                         help="User input prompt")
     parser.add_argument("--external", default="", help="External text / document context")
     parser.add_argument("--threshold", type=float, default=DEFAULT_THRESHOLD, help="Safety threshold")
+    parser.add_argument("--mock", action="store_true", help="Run fast offline mock without downloading model")
     parser.add_argument("--json", action="store_true", help="Print structured JSON")
     args = parser.parse_args()
 
-    res = check_input_safety(args.user_input, args.external, threshold=args.threshold)
+    res = check_input_safety(args.user_input, args.external, threshold=args.threshold, mock=args.mock)
     if args.json:
         print(json.dumps(res, indent=2, ensure_ascii=False))
     else:
