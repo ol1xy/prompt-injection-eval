@@ -51,5 +51,8 @@ team_message_and_spec.txt
 .DS_Store
 Thumbs.db
 
+# Benchmark runtime results
+results*.json
+
 model.py
 
