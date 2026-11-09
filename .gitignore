@@ -29,13 +29,13 @@ wheels/
 .coverage
 htmlcov/
 
-# Local model weights / HuggingFace caches
+# Local model weights & caches
 *.bin
 *.safetensors
 *.pt
 *.onnx
 
-# Ignore course presentations, proposals, and documents (code repo only)
+# Course presentations, notes, documents & handoffs (keep repo code-only)
 *.docx
 *.pptx
 *.pdf
@@ -45,14 +45,18 @@ htmlcov/
 *.m4a
 *.mp3
 *.mp4
-team_message_and_spec.txt
+*.rar
+*.zip
+*.txt
+!requirements.txt
+对应内容介绍.md
+docs/
+
+# Benchmark runtime results
+results*.json
 
 # OS metadata
 .DS_Store
 Thumbs.db
 
-# Benchmark runtime results
-results*.json
-
 model.py
-
