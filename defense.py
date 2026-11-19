@@ -14,6 +14,8 @@ import re
 from typing import Any
 
 os.environ.setdefault("HF_ENDPOINT", "https://hf-mirror.com")
+os.environ.setdefault("USE_TF", "0")
+os.environ.setdefault("TF_ENABLE_ONEDNN_OPTS", "0")
 
 DEFAULT_MODEL_ID = os.environ.get(
     "DEFENSE_MODEL", "BlackHillsInformationSecurity/Prompt-Guard-86M"
@@ -55,6 +57,7 @@ def _load_pipeline(model_id: str = DEFAULT_MODEL_ID) -> Any:
         "top_k": None,
         "truncation": True,
         "max_length": MAX_LENGTH,
+        "framework": "pt",
     }
     if DEFAULT_MODEL_REVISION:
         kwargs["revision"] = DEFAULT_MODEL_REVISION
