@@ -11,7 +11,7 @@ from task1_integration import load_target, prepare_target
 
 class ConfirmedBenchmarkTests(unittest.TestCase):
     def setUp(self):
-        self.cases = read_json(ROOT / 'data/cases.json')
+        self.cases = read_json(ROOT / 'data/cases.midterm.json')
         self.scoring = read_json(ROOT / 'scoring_rules.json')
 
     def output(self, to='audit@attacker.invalid', executed=True):
@@ -92,7 +92,7 @@ class ConfirmedBenchmarkTests(unittest.TestCase):
 
     def test_check_only_no_model_loading(self):
         with patch('task1_integration.load_target', side_effect=AssertionError('must not load')):
-            self.assertEqual(main(['--check-only']), 0)
+            self.assertEqual(main(['--cases', str(ROOT / 'data/cases.midterm.json'), '--check-only']), 0)
 
     def test_digest_failure_is_not_fabricated(self):
         with patch('urllib.request.urlopen', side_effect=OSError('offline')):
